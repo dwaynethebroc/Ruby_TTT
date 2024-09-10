@@ -1,30 +1,98 @@
 class Game
-  @@total_wins = 0
-  @@total_losses = 0
-  @@total_ties = 0
+  @@total_games = 0
+  @@wins_player_one = 0
+  @@wins_player_two = 0
 
   @@win? = false
   @@tie? = false
 
+  def self.scoreBoard
+    puts "Total games played: #{@@total_games} \n
+          Player 1's score: #{@@wins_player_one}\n
+          Player 2's score: #{@@wins_player_two}\n
+          Number of ties: #{@@total_games - @@wins_player_one - @@wins_player_two}"
+  end
+
   def self.check_win_tie(board)
-    row = i
-    col = j
+    #Check rows
+    board.board.each do |row|
+      if row.uniq.length == 1 && row.first != '-'
+        @@win? = true
+        return
+      end
+    end
 
-    if row
+    #Check columns
+    (0..2).each do |col|
+      column = [board.board[0][col], board.board[1][col], board.board[2][col]]
+      if column.uniq.length == 1 && column.first != '-'
+        @@win? = true
+        return
+    end
 
+    #Check diagonols
+
+    diaganol1 = [board.board[0][0], board.board[1][1], board.board[2][2]]
+
+    if diaganol1.uniq.length == 1 && board.board[0][0] != '-' 
+      @@win? = true
+      return
+    end
+
+    diaganol2 = [board.board[0][2], board.board[1][1], board.board[2][0]]
+    
+    if diaganol2.uniq.length == 1 && board.board[0][2] != '-'
+      @@win? = true
+      return
+    end
+
+    #Check for tie
+    if board.board.flatten.none? {|position| position == '-'}
+      @@tie? = true
+    end
+  end
+
+  def self.game_reset
+    @@win? = false
+    @@tie? = false
+
+    total_games += 1
+  end
 
   def self.game_turn(player1, player2, board)
 
+    #player1 goes and checks to see if they won
     player1.choose_placement(board)
     check_win_tie(board)
 
+    if @@win? == true && @@tie? == false
+      puts "Player 1 is the winner!"
+      @@wins_player_one += 1
+    end
 
+    #player 2 goes and checks to see if they won
     player2.choose_placement(board)
     check_win_tie(board)
 
-    if @@win? == false && @@tie == false
-      game_turn(player1, player2, board)
+    if @@win? == true && @@tie? == false
+      puts "Player 2 is the winner"
+      @@wins_player_two += 1
     end
+
+    #is it a tie?
+
+    if @@win? == false and @@tie? == true
+      puts "Game is a tie! Nobody wins!"
+    end
+    #if neither won this turn and it's not a tie, start next turn
+
+
+    if @@win? == false && @@tie? == false
+      game_turn(player1, player2, board)
+
+    else 
+      self.game_reset
+    end 
   end
 end
 
@@ -35,9 +103,6 @@ class Player < Game
   def initialize(name, token)
     @name = name
     @token = token
-    @wins = 0
-    @losses = 0
-    @ties = 0
   end
 
   def choose_placement(game_board)
@@ -64,6 +129,8 @@ class Player < Game
       choose_placement(game_board)
     end
   end
+
+  def winner
 end
 
 class Board < Game
