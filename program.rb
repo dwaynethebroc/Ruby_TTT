@@ -2,8 +2,9 @@ class Game
   @@total_games = 0
   @@wins_player_one = 0
   @@wins_player_two = 0
-  @@win? = false
-  @@tie? = false
+
+  @@win = false
+  @@tie = false
 
   def self.scoreBoard
     puts "Total games played: #{@@total_games}"
@@ -16,7 +17,7 @@ class Game
     # Check rows
     board.board.each do |row|
       if row.uniq.length == 1 && row.first != '-'
-        @@win? = true
+        @@win = true
         return
       end
     end
@@ -25,7 +26,7 @@ class Game
     (0..2).each do |col|
       column = [board.board[0][col], board.board[1][col], board.board[2][col]]
       if column.uniq.length == 1 && column.first != '-'
-        @@win? = true
+        @@win = true
         return
       end
     end
@@ -33,25 +34,25 @@ class Game
     # Check diagonals
     diagonal1 = [board.board[0][0], board.board[1][1], board.board[2][2]]
     if diagonal1.uniq.length == 1 && board.board[0][0] != '-'
-      @@win? = true
+      @@win = true
       return
     end
 
     diagonal2 = [board.board[0][2], board.board[1][1], board.board[2][0]]
     if diagonal2.uniq.length == 1 && board.board[0][2] != '-'
-      @@win? = true
+      @@win = true
       return
     end
 
     # Check for tie
     if board.board.flatten.none? { |position| position == '-' }
-      @@tie? = true
+      @@tie = true
     end
   end
 
   def self.game_reset
-    @@win? = false
-    @@tie? = false
+    @@win = false
+    @@tie = false
     @@total_games += 1
   end
 
@@ -61,7 +62,7 @@ class Game
       player1.choose_placement(board)
       check_win_tie(board)
 
-      if @@win? && !@@tie?
+      if @@win && !@@tie
         puts "#{player1.name} is the winner!"
         @@wins_player_one += 1
         game_reset
@@ -72,7 +73,7 @@ class Game
       player2.choose_placement(board)
       check_win_tie(board)
 
-      if @@win? && !@@tie?
+      if @@win && !@@tie
         puts "#{player2.name} is the winner!"
         @@wins_player_two += 1
         game_reset
@@ -80,7 +81,7 @@ class Game
       end
 
       # Check if it's a tie
-      if !@@win? && @@tie?
+      if !@@win && @@tie
         puts "Game is a tie! Nobody wins!"
         game_reset
         break
@@ -98,7 +99,6 @@ class Player < Game
   end
 
   def choose_placement(game_board)
-    game_board.display_board
 
     input = nil
     until input =~ /^[1-9]$/
