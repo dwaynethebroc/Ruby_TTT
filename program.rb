@@ -62,7 +62,7 @@ class Game
       player1.choose_placement(board)
       check_win_tie(board)
 
-      if @@win && !@@tie
+      if @@win == true && @@tie == false
         puts "#{player1.name} is the winner!"
         @@wins_player_one += 1
         game_reset
@@ -73,7 +73,7 @@ class Game
       player2.choose_placement(board)
       check_win_tie(board)
 
-      if @@win && !@@tie
+      if @@win == true && @@tie == false
         puts "#{player2.name} is the winner!"
         @@wins_player_two += 1
         game_reset
@@ -81,7 +81,7 @@ class Game
       end
 
       # Check if it's a tie
-      if !@@win && @@tie
+      if @@win == false && @@tie == true
         puts "Game is a tie! Nobody wins!"
         game_reset
         break
