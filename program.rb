@@ -45,9 +45,9 @@ class Game
     end
 
     # Check for tie
-    if board.board.flatten.none? { |position| position == '-' }
-      @@tie = true
-    end
+    return unless board.board.flatten.none? { |position| position == '-' }
+
+    @@tie = true
   end
 
   def self.game_reset
@@ -81,11 +81,11 @@ class Game
       end
 
       # Check if it's a tie
-      if @@win == false && @@tie == true
-        puts "Game is a tie! Nobody wins!"
-        game_reset
-        break
-      end
+      next unless @@win == false && @@tie == true
+
+      puts 'Game is a tie! Nobody wins!'
+      game_reset
+      break
     end
   end
 end
@@ -99,7 +99,6 @@ class Player < Game
   end
 
   def choose_placement(game_board)
-
     input = nil
     until input =~ /^[1-9]$/
       puts "#{name}, choose a number between 1-9 to place your token '#{token}':"
@@ -114,7 +113,7 @@ class Player < Game
       game_board.update_board(player_choice, @token)
       game_board.display_board
     else
-      puts "Invalid position or position already taken. Choose another."
+      puts 'Invalid position or position already taken. Choose another.'
       choose_placement(game_board)
     end
   end
@@ -124,14 +123,14 @@ class Board < Game
   attr_accessor :board
 
   def initialize
-    @board = [['-', '-', '-'], 
-              ['-', '-', '-'], 
+    @board = [['-', '-', '-'],
+              ['-', '-', '-'],
               ['-', '-', '-']]
   end
 
   def display_board
     @board.each do |row|
-      puts row.each { |position| position }.join(" ")
+      puts row.each { |position| }.join(' ')
     end
   end
 
@@ -154,7 +153,7 @@ def start_game
     # Display scoreboard after the game
     Game.scoreBoard
 
-    puts "Do you want to play again? (y/n): "
+    puts 'Do you want to play again? (y/n): '
     answer = gets.chomp.downcase
     break if answer != 'y'
   end
